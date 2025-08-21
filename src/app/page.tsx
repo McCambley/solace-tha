@@ -2,6 +2,19 @@
 
 import { useEffect, useState } from "react";
 
+/**
+ * TODO
+ * - Style homepage
+ * - Add type safety to this file
+ * - Fix table error
+ * - Fix onClick
+ * - Implement sorting
+ * - Look at backend for improvements
+ * - Update page metadata for SEO
+ * - Enhanced filtering ex. click on "specialty" to filter
+ * - Implement server side filtering to leverage cache for all users
+ */
+
 // TODO: Implement cache expiration of... however long we'd expect advocates results to stay fresh (1 hour?)
 const searchCache = {};
 
@@ -46,8 +59,6 @@ export default function Home() {
     }
     // Run useEffect when filterValue or advocates list changes
   }, [filterValue, advocates]);
-
-  const onChange = (e) => {};
 
   const onClick = () => {
     console.log(advocates);
