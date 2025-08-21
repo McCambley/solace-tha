@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 
+// TODO: Implement cache expiration of... however long we'd expect advocates results to stay fresh (1 hour?)
+const searchCache = {};
+
 export default function Home() {
   const [advocates, setAdvocates] = useState([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState([]);
@@ -19,16 +22,28 @@ export default function Home() {
 
   useEffect(() => {
     const caseAgnosticFilterValue = filterValue.toLowerCase();
-    // Filter advocates for partial matches on filter value
-    const filteredAdvocates = advocates.filter((advocate) => {
-      const stringifiedAdvocate = JSON.stringify(advocate).toLowerCase();
-      // TODO: analyze performance of this match under higher load
-      const isMatching = stringifiedAdvocate.includes(caseAgnosticFilterValue);
-      return isMatching;
-    });
+    // If search has been done before, display cached results
+    if (searchCache[caseAgnosticFilterValue]) {
+      console.log(
+        `debug: Cache hit on ${caseAgnosticFilterValue}. Setting from cache`
+      );
+      setFilteredAdvocates(searchCache[caseAgnosticFilterValue]);
+    } else {
+      // If not cached value is found, filter advocates for partial matches on filter value
+      const filteredAdvocates = advocates.filter((advocate) => {
+        const stringifiedAdvocate = JSON.stringify(advocate).toLowerCase();
+        const isMatching = stringifiedAdvocate.includes(
+          caseAgnosticFilterValue
+        );
+        return isMatching;
+      });
 
-    // Update displayed advocates
-    setFilteredAdvocates(filteredAdvocates);
+      // Cache filtered results
+      searchCache[caseAgnosticFilterValue] = filteredAdvocates;
+
+      // Update displayed advocates
+      setFilteredAdvocates(filteredAdvocates);
+    }
     // Run useEffect when filterValue or advocates list changes
   }, [filterValue, advocates]);
 
