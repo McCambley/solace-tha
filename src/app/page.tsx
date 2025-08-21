@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [advocates, setAdvocates] = useState([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState([]);
+  const [filterValue, setFilterValue] = useState("");
 
   useEffect(() => {
     console.log("fetching advocates...");
@@ -16,25 +17,22 @@ export default function Home() {
     });
   }, []);
 
-  const onChange = (e) => {
-    const searchTerm = e.target.value;
-
-    document.getElementById("search-term").innerHTML = searchTerm;
-
-    console.log("filtering advocates...");
+  useEffect(() => {
+    const caseAgnosticFilterValue = filterValue.toLowerCase();
+    // Filter advocates for partial matches on filter value
     const filteredAdvocates = advocates.filter((advocate) => {
-      return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.includes(searchTerm)
-      );
+      const stringifiedAdvocate = JSON.stringify(advocate).toLowerCase();
+      // TODO: analyze performance of this match under higher load
+      const isMatching = stringifiedAdvocate.includes(caseAgnosticFilterValue);
+      return isMatching;
     });
 
+    // Update displayed advocates
     setFilteredAdvocates(filteredAdvocates);
-  };
+    // Run useEffect when filterValue or advocates list changes
+  }, [filterValue, advocates]);
+
+  const onChange = (e) => {};
 
   const onClick = () => {
     console.log(advocates);
@@ -49,7 +47,11 @@ export default function Home() {
         <p>
           Searching for: <span id="search-term"></span>
         </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} />
+        <input
+          className="border"
+          onChange={(e) => setFilterValue(e.target.value)}
+          value={filterValue}
+        />
         <button onClick={onClick}>Reset Search</button>
       </div>
       <table>
