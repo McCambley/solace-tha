@@ -19,6 +19,7 @@ import { AdvocateCard } from "./components/AdvocateCard";
  * - Update page metadata for SEO
  * - Enhanced filtering ex. click on "specialty" to filter
  * - Implement server side filtering to leverage cache for all users
+ * - Implement routing for provider pages
  */
 
 // TODO: Implement cache expiration of... however long we'd expect advocates results to stay fresh (1 hour?)
@@ -30,7 +31,6 @@ export default function Home() {
   const [filterValue, setFilterValue] = useState<string>("");
 
   useEffect(() => {
-    console.log("fetching advocates...");
     fetch("/api/advocates").then((response) => {
       response.json().then((jsonResponse) => {
         setAdvocates(jsonResponse.data);
@@ -46,21 +46,22 @@ export default function Home() {
     const caseAgnosticFilterValue = filterValue.toLowerCase();
     // If search has been done before, display cached results
     if (searchCache[caseAgnosticFilterValue]) {
-      console.log(
-        `debug: Cache hit on ${caseAgnosticFilterValue}. Setting from cache ${JSON.stringify(
-          {
-            searchCache,
-          }
-        )}`
-      );
       setFilteredAdvocates(searchCache[caseAgnosticFilterValue]);
     } else {
       // If not cached value is found, filter advocates for partial matches on filter value
       const filteredAdvocates = advocates.filter((advocate) => {
         const advocateValues = Object.values(advocate);
-        const isMatching = advocateValues.some((value) =>
-          String(value).includes(caseAgnosticFilterValue)
-        );
+        const isMatching = advocateValues.some((value) => {
+          if (Array.isArray(value)) {
+            return value.some((item) =>
+              String(item).toLowerCase().includes(caseAgnosticFilterValue)
+            );
+          } else {
+            return String(value)
+              .toLowerCase()
+              .includes(caseAgnosticFilterValue);
+          }
+        });
         return isMatching;
       });
 
@@ -74,16 +75,15 @@ export default function Home() {
   }, [filterValue, advocates]);
 
   const onClick = () => {
-    console.log(advocates);
     setFilteredAdvocates(advocates);
   };
 
   return (
-    <main className="p-6 ">
+    <main className="p-6 flex flex-col justify-center items-center">
       <h1 className="font-dmSerifText text-6xl w-100 text-center pb-4">
         Solace Advocates
       </h1>
-      <div className="flex justify-center items-center gap-2">
+      <div className="flex justify-center items-center gap-2 pb-8">
         <label htmlFor="search-input" className="hidden">
           Search
         </label>
@@ -102,9 +102,11 @@ export default function Home() {
           Reset Search
         </button>
       </div>
-      {filteredAdvocates.map((advocate) => {
-        return <AdvocateCard key={advocate.id} advocate={advocate} />;
-      })}
+      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-screen-lg">
+        {filteredAdvocates.map((advocate) => {
+          return <AdvocateCard key={advocate.id} advocate={advocate} />;
+        })}
+      </section>
     </main>
   );
 }

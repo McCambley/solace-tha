@@ -27,7 +27,6 @@ export const AdvocateCard = ({ advocate }: Props) => {
     setViewingMore(false);
     setDisplayedSpecialties(advocate.specialties.slice(0, 3));
   };
-  console.log(advocate);
   return (
     <a
       href={`https://example.com/${firstName}-${lastName}`}
