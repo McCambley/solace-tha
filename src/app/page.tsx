@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { AdvocateCard } from "./components/AdvocateCard";
 
 /**
  * TODO
@@ -10,6 +11,9 @@ import { useEffect, useState } from "react";
  * - Fix onClick
  * - useSearch custom hook
  * - useAdvocates custom hook
+ * - Implement state management
+ * - Implement error boundaries for search
+ * - Implement Suspense for search
  * - Implement sorting
  * - Look at backend for improvements
  * - Update page metadata for SEO
@@ -37,7 +41,7 @@ export default function Home() {
 
   useEffect(() => {
     // Reset search if
-    if (!filterValue) return setAdvocates(advocates);
+    if (!filterValue) return setFilteredAdvocates(advocates);
 
     const caseAgnosticFilterValue = filterValue.toLowerCase();
     // If search has been done before, display cached results
@@ -75,50 +79,32 @@ export default function Home() {
   };
 
   return (
-    <main style={{ margin: "24px" }}>
-      <h1 className="font-dmSerifText text-6xl">Solace Advocates</h1>
-      <div>
-        <p>Search</p>
-        <p>
-          Searching for: <span id="search-term"></span>
-        </p>
+    <main className="p-6 ">
+      <h1 className="font-dmSerifText text-6xl w-100 text-center pb-4">
+        Solace Advocates
+      </h1>
+      <div className="flex justify-center items-center gap-2">
+        <label htmlFor="search-input" className="hidden">
+          Search
+        </label>
         <input
-          className="border"
+          className="border py-2 px-4 rounded-xl border-amber-900"
           onChange={(e) => setFilterValue(e.target.value)}
           value={filterValue}
+          placeholder="Search Advocates"
+          id="search-input"
+          name="search-input"
         />
-        <button onClick={onClick}>Reset Search</button>
+        <button
+          className="bg-amber-50 border-amber-900 border-2 text-amber-900 py-2 px-4 rounded-xl"
+          onClick={onClick}
+        >
+          Reset Search
+        </button>
       </div>
-      <table>
-        <thead>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>City</th>
-          <th>Degree</th>
-          <th>Specialties</th>
-          <th>Years of Experience</th>
-          <th>Phone Number</th>
-        </thead>
-        <tbody>
-          {filteredAdvocates.map((advocate) => {
-            return (
-              <tr>
-                <td>{advocate.firstName}</td>
-                <td>{advocate.lastName}</td>
-                <td>{advocate.city}</td>
-                <td>{advocate.degree}</td>
-                <td>
-                  {advocate.specialties.map((s) => (
-                    <div>{s}</div>
-                  ))}
-                </td>
-                <td>{advocate.yearsOfExperience}</td>
-                <td>{advocate.phoneNumber}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      {filteredAdvocates.map((advocate) => {
+        return <AdvocateCard key={advocate.id} advocate={advocate} />;
+      })}
     </main>
   );
 }
