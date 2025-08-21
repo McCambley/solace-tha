@@ -43,9 +43,7 @@ export default function Home() {
 
   return (
     <main style={{ margin: "24px" }}>
-      <h1>Solace Advocates</h1>
-      <br />
-      <br />
+      <h1 className="font-dmSerifText text-6xl">Solace Advocates</h1>
       <div>
         <p>Search</p>
         <p>
@@ -54,8 +52,6 @@ export default function Home() {
         <input style={{ border: "1px solid black" }} onChange={onChange} />
         <button onClick={onClick}>Reset Search</button>
       </div>
-      <br />
-      <br />
       <table>
         <thead>
           <th>First Name</th>
