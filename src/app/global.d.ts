@@ -1,4 +1,5 @@
 declare interface Advocate {
+  id: number;
   firstName: string;
   lastName: string;
   city: string;
@@ -6,4 +7,5 @@ declare interface Advocate {
   specialties: string[];
   yearsOfExperience: number;
   phoneNumber: number;
+  createdAt: string;
 }
