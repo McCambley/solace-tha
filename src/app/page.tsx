@@ -96,7 +96,7 @@ export default function Home() {
           name="search-input"
         />
         <button
-          className="bg-amber-50 border-amber-900 border-2 text-amber-900 py-2 px-4 rounded-xl"
+          className="bg-amber-50 border-amber-900 border text-amber-900 py-2 px-4 rounded-xl"
           onClick={onClick}
         >
           Reset Search

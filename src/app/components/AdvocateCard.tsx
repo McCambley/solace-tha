@@ -35,7 +35,7 @@ export const AdvocateCard = ({ advocate }: Props) => {
     >
       <div>
         <div className="flex gap-4 pb-4 items-center">
-          <div className="h-12 w-12 rounded-full flex items-center justify-center border-amber-900 border-2">
+          <div className="h-12 w-12 rounded-full flex items-center justify-center border-amber-900 border">
             🙂
           </div>
           <div>
