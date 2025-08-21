@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
  * - Add type safety to this file
  * - Fix table error
  * - Fix onClick
+ * - useSearch custom hook
+ * - useAdvocates custom hook
  * - Implement sorting
  * - Look at backend for improvements
  * - Update page metadata for SEO
@@ -16,12 +18,12 @@ import { useEffect, useState } from "react";
  */
 
 // TODO: Implement cache expiration of... however long we'd expect advocates results to stay fresh (1 hour?)
-const searchCache = {};
+const searchCache: { [key: string]: Advocate[] } = {};
 
 export default function Home() {
-  const [advocates, setAdvocates] = useState([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState([]);
-  const [filterValue, setFilterValue] = useState("");
+  const [advocates, setAdvocates] = useState<Advocate[]>([]);
+  const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
+  const [filterValue, setFilterValue] = useState<string>("");
 
   useEffect(() => {
     console.log("fetching advocates...");
@@ -34,19 +36,26 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    // Reset search if
+    if (!filterValue) return setAdvocates(advocates);
+
     const caseAgnosticFilterValue = filterValue.toLowerCase();
     // If search has been done before, display cached results
     if (searchCache[caseAgnosticFilterValue]) {
       console.log(
-        `debug: Cache hit on ${caseAgnosticFilterValue}. Setting from cache`
+        `debug: Cache hit on ${caseAgnosticFilterValue}. Setting from cache ${JSON.stringify(
+          {
+            searchCache,
+          }
+        )}`
       );
       setFilteredAdvocates(searchCache[caseAgnosticFilterValue]);
     } else {
       // If not cached value is found, filter advocates for partial matches on filter value
       const filteredAdvocates = advocates.filter((advocate) => {
-        const stringifiedAdvocate = JSON.stringify(advocate).toLowerCase();
-        const isMatching = stringifiedAdvocate.includes(
-          caseAgnosticFilterValue
+        const advocateValues = Object.values(advocate);
+        const isMatching = advocateValues.some((value) =>
+          String(value).includes(caseAgnosticFilterValue)
         );
         return isMatching;
       });
