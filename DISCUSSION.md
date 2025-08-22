@@ -2,6 +2,12 @@
 
 For `V1` of this project, I prioritized fixing initial bugs, creating a functioning user interface complete with initial branding, and implementing developer experience improvements that would expedite future development. While the project is stable, there is still far more work to be done. Here is a detailed list of improvements I would make it given more time.
 
+## Notes on work done
+
+The work done is detailed in the [Frontend Enhancements](https://github.com/McCambley/solace-tha/pull/2/files) pull request. There was another initial pull request called [Setup database and quality of life features](https://github.com/McCambley/solace-tha/pull/1) that handled some initial quality of life changes.
+
+I merged these PR's into main so as to allow developers to see the live project by pulling the project and running `npm run dev` on main directly. My apologies if it was preferred to keep these PR's open!
+
 ## AI usage
 
 I turned completions off for the implementation of `V1`. Once I build up more understanding of the stack and have a deep knowledge of the business logic of Solace, then I will feel comfortable enough to leverage LLMs for development. For initial round of development I find reducing reliance on LLMs and instead diving into documentation and writing code by hand is the best way to develop and understanding of the code base.
